@@ -61,6 +61,26 @@ async def getweather():
     speak(a)
     await client.close()
 
+def calc(l):
+    if '+' in l:
+        index=l.index('+')
+    elif '-' in l:
+        index=l.index('-')
+    elif 'into' in l:
+        index=l.index('into')
+    elif 'by' in l:
+        index = l.index('by')
+    operand=l[index]
+    a=int(l[index-1])
+    b=int(l[index+1])
+    if operand == '+':
+        return a+b
+    if operand == '-':
+        return a-b
+    if operand == 'into':
+        return a*b
+    if operand == 'by':
+        return a/b
 
 def performCommand(query):
 
@@ -117,14 +137,11 @@ def performCommand(query):
         pyautogui.press('enter')
         query='exit'
 
-    if '+' in query:
+    if '+' in query or '-' in query or 'into' in query or 'by' in query:
         #format a+b 
         l=query.split()
-        index=l.index('+')
-        a=int(l[index-1])
-        b=int(l[index+1])
-        print(a,' + ',b,' = ',a+b)
-        speak(str(a+b))
+        #print(l)
+        speak(str(calc(l)))
 
     return query
 
