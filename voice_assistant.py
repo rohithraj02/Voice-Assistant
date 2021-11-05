@@ -9,6 +9,7 @@ from gtts import gTTS
 import random
 import playsound
 import time
+from datetime import datetime
 
 def speak(audio):
     tts= gTTS(text=audio, lang = 'en-uk')
@@ -25,12 +26,19 @@ def getUserName():
     name=takeCommand()
     return name
 
-def wish():
+def wish(hour):
+    greeting=''
+    if(hour<12):
+        greeting = 'Good Morning, '
+    elif hour>=12 and hour <=3:
+        greeting = 'Good Afternoon, '
+    else:
+        greeting = 'Good Evening, '  
     name=getUserName()
     if(name==''):
         name=getUserName()
     #print('Good Evening Rohith.')
-    speak('Good Evening, '+name)
+    speak(greeting+name)
     
 def takeCommand():
     '''To take microphone input and return string output'''
@@ -57,19 +65,26 @@ async def getweather():
     weather = await client.find("Bangalore")
     #print(weather.current.temperature)
     a='The temperature in bangalore is currently '+ str((weather.current.temperature-32)*5//9)+' degree celsius'
-    print(a)
+    #print(a)
     speak(a)
     await client.close()
 
 def calc(l):
+    index=0
     if '+' in l:
         index=l.index('+')
     elif '-' in l:
         index=l.index('-')
-    elif 'into' in l:
+    elif 'into' in l :
         index=l.index('into')
+    elif 'cross' in l:
+        index=l.index('cross')
+    elif 'x' in l:
+        index=l.index('x')
     elif 'by' in l:
         index = l.index('by')
+    elif '/' in l:
+        index = l.index('/')
     operand=l[index]
     a=int(l[index-1])
     b=int(l[index+1])
@@ -77,15 +92,15 @@ def calc(l):
         return a+b
     if operand == '-':
         return a-b
-    if operand == 'into':
+    if operand == 'into' or operand =='cross' or operand == 'x':
         return a*b
-    if operand == 'by':
+    if operand == 'by' or operand == '/':
         return a/b
 
 def performCommand(query):
 
     if 'who are you' in query:
-        speak('I am Priya, your voice assistant')
+        speak('I am Groot')
 
     if 'wikipedia' in query:
         webbrowser.open('https://www.wikipedia.org/', new=2)
@@ -94,9 +109,18 @@ def performCommand(query):
     if 'youtube' in query:
         speak('what should I search')
         query2=takeCommand()
-        if(query2==''):
+        while(query2==''):
             query2=takeCommand()
         webbrowser.open('https://www.youtube.com/results?search_query='+query2, new=2)
+        time.sleep(3)
+        speak('Shall I play the first recomended video?')
+        query3=takeCommand()
+        while(query3==''):
+            query3=takeCommand()
+        print(query3)
+        if query3 in ['yes','yeah','ok','sure','okay'] :
+        #pyautogui.moveTo(704,309)
+            pyautogui.click(x=704,y=309)
         #try adding pyautogui here as well
         query='exit'
 
@@ -113,7 +137,7 @@ def performCommand(query):
         webbrowser.open('https://www.google.co.in/')
         speak('What should I search?')
         query2=takeCommand()
-        if(query2==''):
+        while(query2==''):
             query2=takeCommand()
         pyautogui.typewrite(query2,interval=0.1)
         pyautogui.press('enter')
@@ -131,13 +155,13 @@ def performCommand(query):
         os.system("gnome-terminal")
         speak('What should I search?')
         query2=takeCommand()
-        if(query2==''):
+        while(query2==''):
             query2=takeCommand()
         pyautogui.typewrite(query2,interval=0.1)
         pyautogui.press('enter')
         query='exit'
 
-    if '+' in query or '-' in query or 'into' in query or 'by' in query:
+    if '+' in query or '-' in query or 'into' in query or 'by' in query or 'cross' in query or 'x' in query or '/' in query:
         #format a+b 
         l=query.split()
         #print(l)
@@ -148,7 +172,9 @@ def performCommand(query):
 
 if __name__ == "__main__":
 
-    wish()
+    present_time = datetime.now()
+    #print(present_time)
+    wish(int(present_time.hour))
     query = ''
     #print('How may I help you?')
     speak('How may I help you?')
