@@ -11,6 +11,8 @@ import playsound
 import time
 from datetime import datetime
 
+operations = ['+','-','x','/','into','by','cross','power']
+
 def speak(audio):
     '''Speaks out the text present in the string 'audio' '''
     tts= gTTS(text=audio, lang = 'en-uk')
@@ -88,6 +90,8 @@ def calc(l):
         index = l.index('by')
     elif '/' in l:
         index = l.index('/')
+    elif 'power' in l:
+        index = l.index("power")
     operand=l[index]
     a=int(l[index-1])
     b=int(l[index+1])
@@ -99,6 +103,8 @@ def calc(l):
         return a*b
     if operand == 'by' or operand == '/':
         return a/b
+    if operand == 'power':
+        return a**b
 
 def performCommand(query):
 
@@ -121,16 +127,22 @@ def performCommand(query):
         while(query3==''):
             query3=takeCommand()
         print(query3)
-        if query3 in ['yes','yeah','ok','sure','okay'] :
+        if query3 in ['yes','yeah','ok','sure','okay','yep'] :
         #pyautogui.moveTo(704,309)
             pyautogui.click(x=704,y=309)
         #try adding pyautogui here as well
         query='exit'
 
     if 'joke' in query:
-        joke= pyjokes.get_joke()
-        print(joke)
+        joke= pyjokes.get_joke(language="en", category="neutral")
+        #print(joke)
         speak(joke)
+        speak('Would you like to hear another joke?')
+        query=takeCommand()
+        if(query=='yes'):
+            performCommand('joke')
+        elif(query=='no'):
+            speak('Okay. Anything else that I may help you with?')
 
     if 'weather' in query:
         loop = asyncio.get_event_loop()
@@ -163,8 +175,8 @@ def performCommand(query):
         pyautogui.typewrite(query2,interval=0.1)
         pyautogui.press('enter')
         query='exit'
-
-    if '+' in query or '-' in query or 'into' in query or 'by' in query or 'cross' in query or 'x' in query or '/' in query:
+    
+    if any(i in query for i in operations): #checks if query matches any element from the list 'operations'
         l=query.split()
         #print(l)
         speak(str(calc(l)))
