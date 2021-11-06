@@ -12,6 +12,7 @@ import time
 from datetime import datetime
 
 def speak(audio):
+    '''Speaks out the text present in the string 'audio' '''
     tts= gTTS(text=audio, lang = 'en-uk')
     r = random.randint(1,1000000)
     audiofile = 'audio'+str(r)+'.mp3'
@@ -22,11 +23,13 @@ def speak(audio):
     time.sleep(0.3)
 
 def getUserName():
+    '''Fetches the name of the user. '''
     speak('What may I call you')
     name=takeCommand()
     return name
 
 def wish(hour):
+    '''Greets the user according to the time of the day. '''
     greeting=''
     if(hour<12):
         greeting = 'Good Morning, '
@@ -59,9 +62,8 @@ def takeCommand():
         return ''
 
 async def getweather():
-
+    '''Fetches the weather in Bangalore using python_weather package'''
     client = python_weather.Client(format=python_weather.IMPERIAL)
-
     weather = await client.find("Bangalore")
     #print(weather.current.temperature)
     a='The temperature in bangalore is currently '+ str((weather.current.temperature-32)*5//9)+' degree celsius'
@@ -70,6 +72,7 @@ async def getweather():
     await client.close()
 
 def calc(l):
+    '''Performs basic mathematical calculations'''
     index=0
     if '+' in l:
         index=l.index('+')
@@ -162,7 +165,6 @@ def performCommand(query):
         query='exit'
 
     if '+' in query or '-' in query or 'into' in query or 'by' in query or 'cross' in query or 'x' in query or '/' in query:
-        #format a+b 
         l=query.split()
         #print(l)
         speak(str(calc(l)))
