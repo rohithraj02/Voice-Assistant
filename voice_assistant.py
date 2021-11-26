@@ -12,9 +12,9 @@ import time
 from datetime import datetime
 
 #Things to do
-#1. remove additional while loops. 
-#2. find alternative for pyjoke
-#3. Try using weather api(openweather)
+#1. remove additional while loops.  ✅ 
+#2. find alternative for pyjoke  
+#3. Try using weather api(openweather)  
 
 operations = ['+','-','x','/','into','by','cross','power']
 
@@ -66,6 +66,7 @@ def takeCommand():
         #print(e)
         print("Say that again please.")
         speak('Please say that again .')
+        takeCommand()
         return ''
 
 async def getweather():
@@ -123,14 +124,14 @@ def performCommand(query):
     if 'youtube' in query:
         speak('what should I search')
         query2=takeCommand()
-        while(query2==''):
-            query2=takeCommand()
+        # while(query2==''):
+        #     query2=takeCommand()
         webbrowser.open('https://www.youtube.com/results?search_query='+query2, new=2)
         time.sleep(3)
         speak('Shall I play the first recomended video?')
         query3=takeCommand()
-        while(query3==''):
-            query3=takeCommand()
+        # while(query3==''):
+        #     query3=takeCommand()
         print(query3)
         if query3 in ['yes','yeah','ok','sure','okay','yep'] :
         #pyautogui.moveTo(704,309)
@@ -154,12 +155,12 @@ def performCommand(query):
         loop.run_until_complete(getweather())
     
     if 'google' in query:
-        webbrowser.open('https://www.google.co.in/')
         speak('What should I search?')
         query2=takeCommand()
-        while(query2==''):
-            query2=takeCommand()
-        pyautogui.typewrite(query2,interval=0.1)
+        # while(query2==''):
+        #     query2=takeCommand()
+        #pyautogui.typewrite(query2,interval=0.1)
+        webbrowser.open('https://www.google.co.in/search?q='+query2)
         pyautogui.press('enter')
         query='exit'
     
@@ -175,8 +176,8 @@ def performCommand(query):
         os.system("gnome-terminal")
         speak('What should I search?')
         query2=takeCommand()
-        while(query2==''):
-            query2=takeCommand()
+        # while(query2==''):
+        #     query2=takeCommand()
         pyautogui.typewrite(query2,interval=0.1)
         pyautogui.press('enter')
         query='exit'
