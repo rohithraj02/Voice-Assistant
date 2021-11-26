@@ -11,6 +11,11 @@ import playsound
 import time
 from datetime import datetime
 
+#Things to do
+#1. remove additional while loops. 
+#2. find alternative for pyjoke
+#3. Try using weather api(openweather)
+
 operations = ['+','-','x','/','into','by','cross','power']
 
 def speak(audio):
@@ -27,7 +32,7 @@ def speak(audio):
 def getUserName():
     '''Fetches the name of the user. '''
     speak('What may I call you')
-    name=takeCommand()
+    name=takeCommand().capitalize()
     return name
 
 def wish(hour):
@@ -175,6 +180,7 @@ def performCommand(query):
         pyautogui.typewrite(query2,interval=0.1)
         pyautogui.press('enter')
         query='exit'
+    
     
     if any(i in query for i in operations): #checks if query matches any element from the list 'operations'
         l=query.split()
