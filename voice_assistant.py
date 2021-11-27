@@ -16,6 +16,7 @@ import requests,json
 #1. remove additional while loops.  ✅ 
 #2. find alternative for pyjoke  
 #3. Try using weather api(openweather)   ✅
+#4. Remove unwanted commented code 
 
 operations = ['+','-','x','/','into','by','cross','power']
 
@@ -109,6 +110,21 @@ def weather():
          speak(weather_info)
     else:
         print(" City Not Found ")
+
+def fetch_time():
+    s=''
+    if(present_time.hour<12):
+        s='a.m.'
+    else:
+        s='p.m.'
+
+    t='The time is '+str(present_time.hour)+' : '+str(present_time.minute)+' '+s
+    speak(t)
+
+def fetch_date():
+    d=f"Today's date is {str(present_time.day)} , {str(present_time.month)} , {str(present_time.year)}"
+    speak(d)
+    
 def calc(l):
     '''Performs basic mathematical calculations'''
     index=0
@@ -213,17 +229,26 @@ def performCommand(query):
         pyautogui.press('enter')
         query='exit'
     
+    if 'time' in query:
+        fetch_time() 
+    
+    if 'date' in query:
+        fetch_date()
     
     if any(i in query for i in operations): #checks if query matches any element from the list 'operations'
         l=query.split()
         #print(l)
         speak(str(calc(l)))
 
+    if 'thank you' in query:
+        speak('You are welcome')
+
     return query
 
 
 if __name__ == "__main__":
 
+    global present_time
     present_time = datetime.now()
     #print(present_time)
     wish(int(present_time.hour))
