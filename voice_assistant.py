@@ -10,11 +10,12 @@ import random
 import playsound
 import time
 from datetime import datetime
+import requests,json
 
 #Things to do
 #1. remove additional while loops.  ✅ 
 #2. find alternative for pyjoke  
-#3. Try using weather api(openweather)  
+#3. Try using weather api(openweather)   ✅
 
 operations = ['+','-','x','/','into','by','cross','power']
 
@@ -69,16 +70,45 @@ def takeCommand():
         takeCommand()
         return ''
 
-async def getweather():
-    '''Fetches the weather in Bangalore using python_weather package'''
-    client = python_weather.Client(format=python_weather.IMPERIAL)
-    weather = await client.find("Bangalore")
-    #print(weather.current.temperature)
-    a='The temperature in bangalore is currently '+ str((weather.current.temperature-32)*5//9)+' degree celsius'
-    #print(a)
-    speak(a)
-    await client.close()
+# async def getweather():
+#     '''Fetches the weather in Bangalore using python_weather package'''
+#     client = python_weather.Client(format=python_weather.IMPERIAL)
+#     weather = await client.find("Bangalore")
+#     #print(weather.current.temperature)
+#     a='The temperature in bangalore is currently '+ str((weather.current.temperature-32)*5//9)+' degree celsius'
+#     #print(a)
+#     speak(a)
+#     await client.close()
 
+def weather():
+    api_key = '44a26f75a38784ba68059ac9d623a4d5'
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    city_name = 'Bangalore'
+    complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+    response = requests.get(complete_url)
+    x = response.json()
+    if x["cod"] != "404":
+         y = x["main"]
+         current_temperature = round(y["temp"]-273.15,2)
+         min_temperature = round(y["temp_min"]-273.15 , 2)
+         max_temperature = round(y["temp_max"]-273.15 , 2)
+         current_pressure = y["pressure"]
+         current_humidity = y["humidity"]
+         z = x["weather"]
+         weather_description = z[0]["description"]
+         weather_info=f'The Temperature in Bengaluru is currently{str(current_temperature)} degree Celsius with a low of {min_temperature} and a high of {max_temperature}.\nHumidity level is {str(current_humidity)} %.\n'
+        #  print(" Temperature (in kelvin unit) = " +
+        #             str(current_temperature) +
+        #   "\n atmospheric pressure (in hPa unit) = " +
+        #             str(current_pressure) +
+        #   "\n humidity (in percentage) = " +
+        #             str(current_humidity) +
+        #   "\n description = " +
+        #             str(weather_description))
+         #print(weather_info)
+         speak(weather_info)
+    else:
+        print(" City Not Found ")
 def calc(l):
     '''Performs basic mathematical calculations'''
     index=0
@@ -151,8 +181,9 @@ def performCommand(query):
             speak('Okay. Anything else that I may help you with?')
 
     if 'weather' in query:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(getweather())
+        # loop = asyncio.get_event_loop()
+        # loop.run_until_complete(getweather())
+        weather() 
     
     if 'google' in query:
         speak('What should I search?')
