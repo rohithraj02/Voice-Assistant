@@ -1,7 +1,7 @@
 import speech_recognition as sr
 import webbrowser
-import python_weather 
-import asyncio
+#import python_weather 
+#import asyncio
 import pyjokes
 import pyautogui
 import os
@@ -11,6 +11,7 @@ import playsound
 import time
 from datetime import datetime
 import requests,json
+import wolframalpha
 
 #Things to do
 #1. remove additional while loops.  ✅ 
@@ -34,7 +35,8 @@ def speak(audio):
 def getUserName():
     '''Fetches the name of the user. '''
     speak('What may I call you')
-    name=takeCommand().capitalize()
+    global name 
+    name = takeCommand().capitalize()
     return name
 
 def wish(hour):
@@ -66,7 +68,7 @@ def takeCommand():
         return query
     except Exception as e:
         #print(e)
-        print("Say that again please.")
+        print("Please say that again .")
         speak('Please say that again .')
         takeCommand()
         return ''
@@ -80,7 +82,6 @@ def takeCommand():
 #     #print(a)
 #     speak(a)
 #     await client.close()
-
 def weather():
     api_key = '44a26f75a38784ba68059ac9d623a4d5'
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
@@ -98,20 +99,12 @@ def weather():
          z = x["weather"]
          weather_description = z[0]["description"]
          weather_info=f'The Temperature in Bengaluru is currently{str(current_temperature)} degree Celsius with a low of {min_temperature} and a high of {max_temperature}.\nHumidity level is {str(current_humidity)} %.\n'
-        #  print(" Temperature (in kelvin unit) = " +
-        #             str(current_temperature) +
-        #   "\n atmospheric pressure (in hPa unit) = " +
-        #             str(current_pressure) +
-        #   "\n humidity (in percentage) = " +
-        #             str(current_humidity) +
-        #   "\n description = " +
-        #             str(weather_description))
-         #print(weather_info)
          speak(weather_info)
     else:
         print(" City Not Found ")
 
 def fetch_time():
+    '''Tells current time'''
     s=''
     if(present_time.hour<12):
         s='a.m.'
@@ -122,11 +115,12 @@ def fetch_time():
     speak(t)
 
 def fetch_date():
+    '''Tells current date'''
     d=f"Today's date is {str(present_time.day)} , {str(present_time.month)} , {str(present_time.year)}"
     speak(d)
     
 def calc(l):
-    '''Performs basic mathematical calculations'''
+    '''Performs basic mathematical calculations of two numbers'''
     index=0
     if '+' in l:
         index=l.index('+')
@@ -159,15 +153,15 @@ def calc(l):
         return a**b
 
 def performCommand(query):
-
+    
     if 'who are you' in query:
         speak('I am Groot')
 
-    if 'wikipedia' in query:
+    elif 'wikipedia' in query:
         webbrowser.open('https://www.wikipedia.org/', new=2)
         query='exit'
 
-    if 'youtube' in query:
+    elif 'youtube' in query:
         speak('what should I search')
         query2=takeCommand()
         # while(query2==''):
@@ -185,7 +179,7 @@ def performCommand(query):
         #try adding pyautogui here as well
         query='exit'
 
-    if 'joke' in query:
+    elif 'joke' in query:
         joke= pyjokes.get_joke(language="en", category="neutral")
         #print(joke)
         speak(joke)
@@ -196,22 +190,23 @@ def performCommand(query):
         elif(query=='no'):
             speak('Okay. Anything else that I may help you with?')
 
-    if 'weather' in query:
+    elif 'weather' in query:
         # loop = asyncio.get_event_loop()
         # loop.run_until_complete(getweather())
         weather() 
     
-    if 'google' in query:
-        speak('What should I search?')
+    elif 'google' in query:
+        speak('What should I search for, '+name+'?')
         query2=takeCommand()
+        if(query2 is not exit):
         # while(query2==''):
         #     query2=takeCommand()
         #pyautogui.typewrite(query2,interval=0.1)
-        webbrowser.open('https://www.google.co.in/search?q='+query2)
-        pyautogui.press('enter')
-        query='exit'
+            webbrowser.open('https://www.google.co.in/search?q='+query2)
+            pyautogui.press('enter')
+            query='exit'
     
-    if 'location' in query:
+    elif 'location' in query:
         speak('What is the location?')
         location = takeCommand()
         url = 'https://www.google.nl/maps/place/' + location + '/&amp;'
@@ -219,7 +214,7 @@ def performCommand(query):
         webbrowser.open(url)
         query = 'exit'
     
-    if'terminal' in query:
+    elif'terminal' in query:
         os.system("gnome-terminal")
         speak('What should I search?')
         query2=takeCommand()
@@ -229,19 +224,31 @@ def performCommand(query):
         pyautogui.press('enter')
         query='exit'
     
-    if 'time' in query:
+    elif 'time' in query:
         fetch_time() 
     
-    if 'date' in query:
+    elif 'date' in query:
         fetch_date()
     
-    if any(i in query for i in operations): #checks if query matches any element from the list 'operations'
+    elif any(i in query for i in operations): #checks if query matches any element from the list 'operations'
         l=query.split()
         #print(l)
         speak(str(calc(l)))
 
-    if 'thank you' in query:
-        speak('You are welcome')
+    elif 'thank you' in query:
+        thankYou='You are welcome'+name
+        speak(thankYou)
+    
+    else:
+        try:
+            api='U2UHK6-4H49EG2LR3'
+            client = wolframalpha.Client(api)
+            res = client.query(query)
+            answer = next(res.results).text
+            print('Fetching your result.......')
+            speak(answer)
+        except:
+            speak("Sorry could't find anything on that")
 
     return query
 
