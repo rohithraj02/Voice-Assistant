@@ -1,7 +1,10 @@
-This is a voice assistant 
-List of things that it can do-
+These are the list of things that I can do-
 1. Greet you based on time of day
-2. Give weather details
-3. Simple calculations.
-4. Make sesarches on youtube,google,wikipedia and maps.
-5. Tell a joke
+2. Give weather details(using openweather) Ex: say "what is the weather like" 
+3. Date/time details. For example Say "What is the time" or "What is the date"
+4. Simple calculations with two variables.(Addition,Subtraction,Multiplication,Division,Exponentiation) For Example say 5+6 or 5 power 6
+5. Make searches on youtube,google,wikipedia and maps. For example, say "open youtube" or "open google " or "open wikipedia" or " search for a location"
+6. Tell a joke. For example, say "tell me a joke"
+7. Give responses to general questions(using wolframalpha) For example, Say "I have a question" and then ask the question.
+8. Print a calendar .
+9. Shutdown your computer. Ex: say "shutdown"
